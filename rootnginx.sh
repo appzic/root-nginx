@@ -7,6 +7,11 @@ mk_nginx_basic_conf() {
    echo "server {" > $CONFIG_FILE_NAME
    echo "   listen 80;" >> $CONFIG_FILE_NAME
    echo "   server_name $DOMAIN;" >> $CONFIG_FILE_NAME
+   echo "" >> $CONFIG_FILE_NAME
+   echo "   location / {" >> $CONFIG_FILE_NAME
+   echo "      root /usr/share/nginx;" >> $CONFIG_FILE_NAME
+   echo "      index index.html;" >> $CONFIG_FILE_NAME
+   echo "   }" >> $CONFIG_FILE_NAME
    echo "}" >> $CONFIG_FILE_NAME
 }
 
