@@ -16,12 +16,9 @@ mk_nginx_basic_setup() {
 
    # make public html
    PUBLIC_HTML_FOLDER=./html/$DOMAIN
-   mkdir $PUBLIC_HTML_FOLDER
-   mkdir $PUBLIC_HTML_FOLDER/about-us
+   mkdir -p $PUBLIC_HTML_FOLDER/.well-known/acme-challenge
 
-   # copy files
    cp ./nginx/index.html $PUBLIC_HTML_FOLDER
-   cp ./nginx/index.html $PUBLIC_HTML_FOLDER/about-us
 }
 
 CONFIG_FILE_NAME=./config/$DOMAIN.conf
