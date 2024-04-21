@@ -36,6 +36,7 @@ mk_certbot_docker_compose() {
    echo "      --webroot -w /var/www/certbot" >> $COMPOSE_YML
    echo "      --force-renewal" >> $COMPOSE_YML
    echo "      --email yasithanadeeshan@gmail.com" >> $COMPOSE_YML
+   echo "      --agree-tos" >> $COMPOSE_YML
    echo "      -d $DOMAIN" >> $COMPOSE_YML
 }
 
