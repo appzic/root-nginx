@@ -13,11 +13,15 @@ mk_nginx_basic_setup() {
    echo "      root /usr/share/nginx/$DOMAIN;" >> $CONFIG_FILE_NAME
    echo "      index index.html;" >> $CONFIG_FILE_NAME
    echo "   }" >> $CONFIG_FILE_NAME
+   echo "" >> $CONFIG_FILE_NAME
+   echo "   location ~ /.well-known/acme-challenge/ {" >> $CONFIG_FILE_NAME
+   echo "      root /var/www/certbot;" >> $CONFIG_FILE_NAME
+   echo "   }" >> $CONFIG_FILE_NAME
    echo "}" >> $CONFIG_FILE_NAME
 
    # make public html
    PUBLIC_HTML_FOLDER=./html/$DOMAIN
-   mkdir -p $PUBLIC_HTML_FOLDER/.well-known/acme-challenge
+   mkdir $PUBLIC_HTML_FOLDER
 
    cp ./nginx/index.html $PUBLIC_HTML_FOLDER
 }
@@ -29,7 +33,7 @@ mk_certbot_docker_compose() {
    echo "    image: certbot/certbot:latest" >> $COMPOSE_YML
    echo "    container_name: certbot" >> $COMPOSE_YML
    echo "    volumes:" >> $COMPOSE_YML
-   echo "      - ../html/$DOMAIN/.well-known/acme-challenge:/var/www/certbot" >> $COMPOSE_YML
+   echo "      - ./www:/var/www/certbot" >> $COMPOSE_YML
    echo "      - ./conf:/etc/letsencrypt" >> $COMPOSE_YML
    echo "    command: |" >> $COMPOSE_YML
    echo "      certonly" >> $COMPOSE_YML
