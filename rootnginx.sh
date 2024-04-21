@@ -29,7 +29,7 @@ mk_certbot_docker_compose() {
    echo "    image: certbot/certbot:latest" >> $COMPOSE_YML
    echo "    container_name: certbot" >> $COMPOSE_YML
    echo "    volumes:" >> $COMPOSE_YML
-   echo "      - ./www:/var/www/certbot" >> $COMPOSE_YML
+   echo "      - ../html/$DOMAIN/.well-known/acme-challenge:/var/www/certbot" >> $COMPOSE_YML
    echo "      - ./conf:/etc/letsencrypt" >> $COMPOSE_YML
    echo "    command: |" >> $COMPOSE_YML
    echo "      certonly" >> $COMPOSE_YML
