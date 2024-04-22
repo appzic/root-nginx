@@ -2,12 +2,12 @@
 
 fn_init() {
 
-   read -p "Enter domain or subdomain: " doamin
-   nginx_conf_name=./config/$doamin.conf
+   read -p "Enter domain or subdomain: " domain
+   nginx_conf_name=./config/$domain.conf
 
    echo "server {" > $nginx_conf_name
    echo "   listen 80;" >> $nginx_conf_name
-   echo "   server_name $doamin;" >> $nginx_conf_name
+   echo "   server_name $domain;" >> $nginx_conf_name
    echo "" >> $nginx_conf_name
    echo "   location / {" >> $nginx_conf_name
    echo "      root /usr/share/nginx;" >> $nginx_conf_name
@@ -28,7 +28,7 @@ fn_ssl() {
 
    cd ssl
 
-   read -p "Enter domain or subdomain: " doamin
+   read -p "Enter domain or subdomain: " domain
    read -p "Enter your email: " email
 
    echo "services:" > $compose_yml
@@ -44,17 +44,17 @@ fn_ssl() {
    echo "      --force-renewal" >> $compose_yml
    echo "      --email $email" >> $compose_yml
    echo "      --agree-tos" >> $compose_yml
-   echo "      -d $doamin" >> $compose_yml
+   echo "      -d $domain" >> $compose_yml
 
    docker compose up
    rm -fr $compose_yml
 
    cd ..
-   nginx_conf_name=./config/$doamin.conf
+   nginx_conf_name=./config/$domain.conf
 
    echo "server {" > $nginx_conf_name
    echo "   listen 80;" >> $nginx_conf_name
-   echo "   server_name $doamin;" >> $nginx_conf_name
+   echo "   server_name $domain;" >> $nginx_conf_name
    echo "" >> $nginx_conf_name
    echo "   return 301 https://\$host\$request_uri;" >> $nginx_conf_name
    echo "}" >> $nginx_conf_name
@@ -63,7 +63,7 @@ fn_ssl() {
    echo "   listen 443 ssl http2;" >> $nginx_conf_name
    echo "   ssl_certificate /etc/letsencrypt/live/$domain/fullchain.pem;" >> $nginx_conf_name
    echo "   ssl_certificate_key /etc/letsencrypt/live/$domain/privkey.pem;" >> $nginx_conf_name
-   echo "   server_name $doamin;" >> $nginx_conf_name
+   echo "   server_name $domain;" >> $nginx_conf_name
    echo "" >> $nginx_conf_name
    echo "   location / {" >> $nginx_conf_name
    echo "      root /usr/share/nginx;" >> $nginx_conf_name
