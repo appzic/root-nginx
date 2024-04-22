@@ -57,9 +57,9 @@ fn_ssl() {
    echo "   server_name $doamin;" >> $nginx_conf_name
    echo "" >> $nginx_conf_name
    echo "   return 301 https://\$host\$request_uri;" >> $nginx_conf_name
-   echo "}" > $nginx_conf_name
+   echo "}" >> $nginx_conf_name
    echo "" >> $nginx_conf_name
-   echo "server {" > $nginx_conf_name
+   echo "server {" >> $nginx_conf_name
    echo "   listen 443 ssl http2;" >> $nginx_conf_name
    echo "   ssl_certificate /etc/letsencrypt/live/$domain/fullchain.pem;" >> $nginx_conf_name
    echo "   ssl_certificate_key /etc/letsencrypt/live/$domain/privkey.pem;" >> $nginx_conf_name
