@@ -11,3 +11,4 @@ services:
       - ./config:/etc/nginx/conf.d
       - ./nginx/index.html:/usr/share/nginx/index.html
       - ./ssl/www:/var/www/certbot
+      - ./ssl/conf:/etc/letsencrypt

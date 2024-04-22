@@ -18,33 +18,62 @@ fn_init() {
    echo "      root /var/www/certbot;" >> $nginx_conf_name
    echo "   }" >> $nginx_conf_name
    echo "}" >> $nginx_conf_name
+
+   docker compose down
+   docker compose up -d
 }
 
 fn_ssl() {
-   COMPOSE_YML=compose.yml
+   compose_yml=compose.yml
 
    cd ssl
 
    read -p "Enter domain or subdomain: " doamin
    read -p "Enter your email: " email
 
-   echo "services:" > $COMPOSE_YML
-   echo "  certbot:" >> $COMPOSE_YML
-   echo "    image: certbot/certbot:latest" >> $COMPOSE_YML
-   echo "    container_name: certbot" >> $COMPOSE_YML
-   echo "    volumes:" >> $COMPOSE_YML
-   echo "      - ./www:/var/www/certbot" >> $COMPOSE_YML
-   echo "      - ./conf:/etc/letsencrypt" >> $COMPOSE_YML
-   echo "    command: |" >> $COMPOSE_YML
-   echo "      certonly" >> $COMPOSE_YML
-   echo "      --webroot -w /var/www/certbot" >> $COMPOSE_YML
-   echo "      --force-renewal" >> $COMPOSE_YML
-   echo "      --email $email" >> $COMPOSE_YML
-   echo "      --agree-tos" >> $COMPOSE_YML
-   echo "      -d $doamin" >> $COMPOSE_YML
+   echo "services:" > $compose_yml
+   echo "  certbot:" >> $compose_yml
+   echo "    image: certbot/certbot:latest" >> $compose_yml
+   echo "    container_name: certbot" >> $compose_yml
+   echo "    volumes:" >> $compose_yml
+   echo "      - ./www:/var/www/certbot" >> $compose_yml
+   echo "      - ./conf:/etc/letsencrypt" >> $compose_yml
+   echo "    command: |" >> $compose_yml
+   echo "      certonly" >> $compose_yml
+   echo "      --webroot -w /var/www/certbot" >> $compose_yml
+   echo "      --force-renewal" >> $compose_yml
+   echo "      --email $email" >> $compose_yml
+   echo "      --agree-tos" >> $compose_yml
+   echo "      -d $doamin" >> $compose_yml
 
    docker compose up
-   rm -fr $COMPOSE_YML
+   rm -fr $compose_yml
+
+   cd ..
+   nginx_conf_name=./config/$doamin.conf
+
+   echo "server {" > $nginx_conf_name
+   echo "   listen 80;" >> $nginx_conf_name
+   echo "   server_name $doamin;" >> $nginx_conf_name
+   echo "" >> $nginx_conf_name
+   echo "   return 301 https://\$host\$request_uri;" >> $nginx_conf_name
+   echo "}" > $nginx_conf_name
+   echo "" >> $nginx_conf_name
+   echo "server {" > $nginx_conf_name
+   echo "   listen 443 ssl http2;" >> $nginx_conf_name
+   echo "   ssl_certificate /etc/letsencrypt/live/$domain/fullchain.pem;" >> $nginx_conf_name
+   echo "   ssl_certificate_key /etc/letsencrypt/live/$domain/privkey.pem;" >> $nginx_conf_name
+   echo "   server_name $doamin;" >> $nginx_conf_name
+   echo "" >> $nginx_conf_name
+   echo "   location / {" >> $nginx_conf_name
+   echo "      root /usr/share/nginx;" >> $nginx_conf_name
+   echo "      index index.html;" >> $nginx_conf_name
+   echo "   }" >> $nginx_conf_name
+   echo "" >> $nginx_conf_name
+   echo "}" >> $nginx_conf_name
+
+   docker compose down
+   docker compose up -d
 }
 
 fn_update() {
