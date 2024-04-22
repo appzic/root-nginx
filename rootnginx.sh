@@ -78,7 +78,35 @@ fn_ssl() {
 
 fn_update() {
    read -p "Enter your email: " email
-   echo "feat update"
+
+   cd ./ssl
+   files=../config/*.conf
+   compose_yml=compose.yml
+
+   echo "services:" > $compose_yml
+   echo "  certbot:" >> $compose_yml
+   echo "    image: certbot/certbot:latest" >> $compose_yml
+   echo "    container_name: certbot" >> $compose_yml
+   echo "    volumes:" >> $compose_yml
+   echo "      - ./www:/var/www/certbot" >> $compose_yml
+   echo "      - ./conf:/etc/letsencrypt" >> $compose_yml
+   echo "    command: |" >> $compose_yml
+   echo "      certonly" >> $compose_yml
+   echo "      --webroot -w /var/www/certbot" >> $compose_yml
+   echo "      --force-renewal" >> $compose_yml
+   echo "      --email $email" >> $compose_yml
+   echo "      --agree-tos" >> $compose_yml
+   for file in $files; do
+      domain=$(basename "${file}" .conf)
+      echo "      -d $domain" >> "$compose_yml"
+   done
+
+   docker compose up
+   rm -fr $compose_yml
+
+   cd ..
+   docker compose down
+   docker compose up -d
 }
 
 fn_help() {
