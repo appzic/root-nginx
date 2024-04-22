@@ -18,11 +18,6 @@ fn_init() {
    echo "      root /var/www/certbot;" >> $nginx_conf_name
    echo "   }" >> $nginx_conf_name
    echo "}" >> $nginx_conf_name
-
-   public_html_folder=./html/$doamin
-   mkdir $public_html_folder
-
-   cp ./nginx/index.html $public_html_folder
 }
 
 fn_ssl() {

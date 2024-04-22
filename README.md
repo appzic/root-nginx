@@ -2,6 +2,7 @@
 
 ## Up Root Nginx
 ```bash
+cd root-nginx
 docker compose up -d
 ```
 
