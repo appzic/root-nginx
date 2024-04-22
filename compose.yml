@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx:1.25.3
+    image: nginx:stable-alpine3.17-slim
     container_name: root_nginx
     restart: always
     ports:
