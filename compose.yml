@@ -9,5 +9,5 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./config:/etc/nginx/conf.d
-      - ./html:/usr/share/nginx
+      - ./nginx/index.html:/usr/share/nginx/index.html
       - ./ssl/www:/var/www/certbot

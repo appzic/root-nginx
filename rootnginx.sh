@@ -1,33 +1,38 @@
 #!/bin/bash
 
-CONFIG_FILE_NAME=
-DOMAIN=$1
-COMPOSE_YML=compose.yml
+fn_init() {
 
-mk_nginx_basic_setup() {
-   echo "server {" > $CONFIG_FILE_NAME
-   echo "   listen 80;" >> $CONFIG_FILE_NAME
-   echo "   server_name $DOMAIN;" >> $CONFIG_FILE_NAME
-   echo "" >> $CONFIG_FILE_NAME
-   echo "   location / {" >> $CONFIG_FILE_NAME
-   echo "      root /usr/share/nginx/$DOMAIN;" >> $CONFIG_FILE_NAME
-   echo "      index index.html;" >> $CONFIG_FILE_NAME
-   echo "   }" >> $CONFIG_FILE_NAME
-   echo "" >> $CONFIG_FILE_NAME
-   echo "   location ~ /.well-known/acme-challenge/ {" >> $CONFIG_FILE_NAME
-   echo "      root /var/www/certbot;" >> $CONFIG_FILE_NAME
-   echo "   }" >> $CONFIG_FILE_NAME
-   echo "}" >> $CONFIG_FILE_NAME
+   read -p "Enter domain or subdomain: " doamin
+   nginx_conf_name=./config/$doamin.conf
 
-   # make public html
-   PUBLIC_HTML_FOLDER=./html/$DOMAIN
-   mkdir $PUBLIC_HTML_FOLDER
+   echo "server {" > $nginx_conf_name
+   echo "   listen 80;" >> $nginx_conf_name
+   echo "   server_name $DOMAIN;" >> $nginx_conf_name
+   echo "" >> $nginx_conf_name
+   echo "   location / {" >> $nginx_conf_name
+   echo "      root /usr/share/nginx;" >> $nginx_conf_name
+   echo "      index index.html;" >> $nginx_conf_name
+   echo "   }" >> $nginx_conf_name
+   echo "" >> $nginx_conf_name
+   echo "   location ~ /.well-known/acme-challenge/ {" >> $nginx_conf_name
+   echo "      root /var/www/certbot;" >> $nginx_conf_name
+   echo "   }" >> $nginx_conf_name
+   echo "}" >> $nginx_conf_name
 
-   cp ./nginx/index.html $PUBLIC_HTML_FOLDER
+   public_html_folder=./html/$doamin
+   mkdir $public_html_folder
+
+   cp ./nginx/index.html $public_html_folder
 }
 
-mk_certbot_docker_compose() {
+fn_ssl() {
+   COMPOSE_YML=compose.yml
+
    cd ssl
+
+   read -p "Enter domain or subdomain: " doamin
+   read -p "Enter your email: " email
+
    echo "services:" > $COMPOSE_YML
    echo "  certbot:" >> $COMPOSE_YML
    echo "    image: certbot/certbot:latest" >> $COMPOSE_YML
@@ -39,11 +44,35 @@ mk_certbot_docker_compose() {
    echo "      certonly" >> $COMPOSE_YML
    echo "      --webroot -w /var/www/certbot" >> $COMPOSE_YML
    echo "      --force-renewal" >> $COMPOSE_YML
-   echo "      --email yasithanadeeshan@gmail.com" >> $COMPOSE_YML
+   echo "      --email $email" >> $COMPOSE_YML
    echo "      --agree-tos" >> $COMPOSE_YML
-   echo "      -d $DOMAIN" >> $COMPOSE_YML
+   echo "      -d $doamin" >> $COMPOSE_YML
+
+   docker compose up
+   rm -fr $COMPOSE_YML
 }
 
-CONFIG_FILE_NAME=./config/$DOMAIN.conf
-# mk_nginx_basic_setup
-mk_certbot_docker_compose
+fn_update() {
+   read -p "Enter your email: " email
+   echo "feat update"
+}
+
+fn_help() {
+   echo "Usage:  sh rootnginx.sh [OPTIONS]"
+   echo ""
+   echo "Options:"
+   echo "   init     Initialize HTTP configuration"
+   echo "   ssl      Initialize HTTPs configuration"
+   echo "   update   Update SSL certificates"
+}
+
+# Main
+if [ "$1" = "init" ]; then
+   fn_init
+elif [ "$1" = "ssl" ]; then
+   fn_ssl
+elif [ "$1" = "update" ]; then
+   fn_update
+else
+   fn_help
+fi
