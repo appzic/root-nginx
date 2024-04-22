@@ -7,7 +7,7 @@ fn_init() {
 
    echo "server {" > $nginx_conf_name
    echo "   listen 80;" >> $nginx_conf_name
-   echo "   server_name $DOMAIN;" >> $nginx_conf_name
+   echo "   server_name $doamin;" >> $nginx_conf_name
    echo "" >> $nginx_conf_name
    echo "   location / {" >> $nginx_conf_name
    echo "      root /usr/share/nginx;" >> $nginx_conf_name
