@@ -14,4 +14,4 @@ services:
       - ./ssl/conf:/etc/letsencrypt
 
 networks:
-  - internalnet
+  internalnet:
