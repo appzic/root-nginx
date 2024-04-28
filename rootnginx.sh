@@ -130,7 +130,7 @@ fn_reverse_proxy() {
    echo "   server_name $domain;" >> $nginx_conf_name
    echo "" >> $nginx_conf_name
    echo "   location / {" >> $nginx_conf_name
-   echo "      proxy_pass $proxy" >> $nginx_conf_name
+   echo "      proxy_pass $proxy;" >> $nginx_conf_name
    echo "      proxy_set_header Host \$http_host;" >> $nginx_conf_name
    echo "      proxy_set_header X-Real-IP \$remote_addr;" >> $nginx_conf_name
    echo "      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;" >> $nginx_conf_name
