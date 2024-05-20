@@ -1,5 +1,10 @@
 # Root Nginx
 
+## Clone Repo
+```bash
+git clone https://github.com/appzic/root-nginx.git
+```
+
 ## Up Root Nginx
 ```bash
 cd root-nginx
